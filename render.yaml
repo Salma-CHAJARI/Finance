@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: financial-analyzer-backend
+    env: python
+    repo: https://github.com/Salma-CHAJARI/Finance
+    branch: main
+    # If your repo has a 'backend' folder at root
+    root: backend
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.server.app:app --host 0.0.0.0 --port $PORT
+    env:
+      - key: ANALYZER_DATA_DIR
+        value: "./storage"
+      - key: ANALYZER_ALLOW_ORIGINS
+        value: "https://financial-analyzer-frontend.onrender.com"
+  - type: web
+    name: financial-analyzer-frontend
+    env: node
+    repo: https://github.com/Salma-CHAJARI/Finance
+    branch: main
+    root: frontends/web
+    buildCommand: npm install --prefix frontends/web && npm run build --prefix frontends/web
+    startCommand: npm run start --prefix frontends/web
+    env:
+      - key: NEXT_PUBLIC_API_URL
+        value: "https://financial-analyzer-backend.onrender.com"
